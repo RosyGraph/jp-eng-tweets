@@ -2,8 +2,10 @@ import csv
 import random
 from pathlib import Path as P
 
+from pyperclip import copy
+
 DATA_DIR = P(__file__).parent.parent / "data" / "elonmusk"
-TWEET_IDX = 7
+TWEET_ID = 7
 
 tweets = []
 
@@ -15,5 +17,3 @@ for file in DATA_DIR.glob("*.csv"):
             for row in reader
             if len(row[TWEET_IDX].split(" ")) > 10 and "@" not in row[TWEET_IDX]
         )
-
-print("\n".join(random.sample(tweets, 10)))
