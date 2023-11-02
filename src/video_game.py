@@ -14,17 +14,17 @@ if player == "1":
     for row in data:
         print("TWEET:\n" + row["tweet"] + "\n")
         print("EXPLANATION:\n" + row["jp_explanation"] + "\n")
-        data["jp_comprehensiveness"] = int(input("Comprehensiveness: 1-5"))
-        data["jp_relevance"] = int(input("Relevance: 1-5"))
-        data["jp_accuracy"] = int(input("Accuracy: 1-5"))
+        row["jp_comprehensiveness"] = int(input("Comprehensiveness: 1-5"))
+        row["jp_relevance"] = int(input("Relevance: 1-5"))
+        row["jp_accuracy"] = int(input("Accuracy: 1-5"))
 elif player == "2":
     print("You selected EN")
     for row in data:
         print("TWEET:\n" + row["tweet"] + "\n")
         print("EXPLANATION:\n" + row["en_explanation"] + "\n")
-        data["en_comprehensiveness"] = int(input("Comprehensiveness: 1-5"))
-        data["en_relevance"] = int(input("Relevance: 1-5"))
-        data["en_accuracy"] = int(input("Accuracy: 1-5"))
+        row["en_comprehensiveness"] = int(input("Comprehensiveness: 1-5"))
+        row["en_relevance"] = int(input("Relevance: 1-5"))
+        row["en_accuracy"] = int(input("Accuracy: 1-5"))
 
 with open(OUTPUT_FILE, "w") as f:
     json.dump(data, f, indent=2)
