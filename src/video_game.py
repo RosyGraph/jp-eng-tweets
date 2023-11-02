@@ -2,9 +2,6 @@ import json
 from pathlib import Path as P
 
 JSON_FILE = P(__file__).parent.parent / "reports" / "elonmusk_claude1-2.json"
-OUTPUT_FILE = (
-    P(__file__).parent.parent / "reports" / "elonmusk_claude1-2_responses.json"
-)
 
 with open(JSON_FILE, "r") as f:
     data = json.load(f)
@@ -26,5 +23,5 @@ elif player == "2":
         row["en_relevance"] = int(input("Relevance: 1-5"))
         row["en_accuracy"] = int(input("Accuracy: 1-5"))
 
-with open(OUTPUT_FILE, "w") as f:
+with open(JSON_FILE, "w") as f:
     json.dump(data, f, indent=2)
