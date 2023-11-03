@@ -1,32 +1,12 @@
-from pathlib import Path as P
-
 import matplotlib.pyplot as plt
-import pandas as pd
 
-REPORTS_DIR = P(__file__).parent.parent / "reports"
-
-
-def load_df():
-    df = pd.read_json(REPORTS_DIR / "elonmusk_claude1-2.json")
-    df["tweet_index"] = df.index
-    df = df[
-        [
-            "tweet_index",
-            "jp_comprehensiveness",
-            "en_comprehensiveness",
-            "jp_relevance",
-            "en_relevance",
-            "jp_accuracy",
-            "en_accuracy",
-        ]
-    ]
-    return df
+from process_reports import load_df
 
 
 def show_full_barchart():
     df = load_df()
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    _, ax = plt.subplots(figsize=(8, 4))
 
     ax = df.set_index("tweet_index").plot(kind="bar", rot=0, ax=ax)
     ax.set_xlabel("Tweet Index")
@@ -40,7 +20,7 @@ def show_full_barchart():
 def show_en_jp_average_scores():
     df = load_df()
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    _, ax = plt.subplots(figsize=(8, 4))
 
     df["en_average"] = df[["en_comprehensiveness", "en_relevance", "en_accuracy"]].mean(
         axis=1
