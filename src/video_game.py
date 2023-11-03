@@ -24,4 +24,4 @@ elif player == "2":
         row["en_accuracy"] = int(input("Accuracy: 1-5"))
 
 with open(JSON_FILE, "w") as f:
-    json.dump(data, f, indent=2)
+    json.dump(data, f, indent=2, ensure_ascii=False)
