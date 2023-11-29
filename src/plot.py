@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path as P
 
 import matplotlib.pyplot as plt
@@ -42,12 +43,12 @@ def show_stripplot():
 
     df["metric"] = df["metric"].str.replace("en_", "").str.replace("jp_", "")
 
-    sns.set_style("whitegrid")
+    plt.figure(figsize=(12, 4))
 
     sns.stripplot(
         data=df,
-        x="metric",
-        y="score",
+        x="score",
+        y="metric",
         hue="language",
         palette="Pastel1",
         alpha=0.24,
@@ -56,6 +57,7 @@ def show_stripplot():
         linewidth=0,
         marker="D",
         s=10,
+        orient="h",
     )
 
     plt.xlabel("Metric")
@@ -140,7 +142,6 @@ def show_ecdf():
         axis=1
     )
 
-    sns.set_style("whitegrid")
     sns.set_palette("Pastel1")
 
     en_series, en_ecdf = ecdf(df["en_average"])
@@ -169,7 +170,7 @@ def show_en_jp_average_scores():
     df["jp_average"] = df[["jp_comprehensiveness", "jp_relevance", "jp_accuracy"]].mean(
         axis=1
     )
-    fig = plt.figure(figsize=(6, 10))
+    plt.figure(figsize=(6, 10))
     ax = df[["en_average", "jp_average"]].plot(kind="bar", rot=0, ax=ax)
     ax.set_xlabel("Tweet Index")
     ax.set_ylabel("Average Score")
@@ -179,4 +180,38 @@ def show_en_jp_average_scores():
     plt.show()
 
 
-show_avg_by_metric()
+if __name__ == "__main__":
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument(
+        "--show-full-barchart",
+        action="store_true",
+        help="Show full barchart of all scores",
+    )
+    argparser.add_argument(
+        "--show-stripplot", action="store_true", help="Show stripplot of all scores"
+    )
+    argparser.add_argument(
+        "--show-avg-by-metric",
+        action="store_true",
+        help="Show average scores by metric",
+    )
+    argparser.add_argument(
+        "--show-ecdf", action="store_true", help="Show ECDF of average scores"
+    )
+    argparser.add_argument(
+        "--show-en-jp-average-scores",
+        action="store_true",
+        help="Show average scores by language",
+    )
+    args = argparser.parse_args()
+
+    if args.show_full_barchart:
+        show_full_barchart()
+    if args.show_stripplot:
+        show_stripplot()
+    if args.show_avg_by_metric:
+        show_avg_by_metric()
+    if args.show_ecdf:
+        show_ecdf()
+    if args.show_en_jp_average_scores:
+        show_en_jp_average_scores()
