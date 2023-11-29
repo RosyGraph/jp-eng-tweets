@@ -2,16 +2,11 @@ from pathlib import Path as P
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import seaborn as sns
 
+from load_data import load_df
+
 DATA_PATH = P(__file__).parent.parent / "reports" / "tweets_report.json"
-
-
-def load_df():
-    df = pd.read_json(DATA_PATH)
-    df["tweet_index"] = df.index
-    return df
 
 
 def show_full_barchart():
@@ -26,6 +21,50 @@ def show_full_barchart():
 
     plt.tight_layout()
     plt.show()
+
+
+def show_stripplot():
+    df = load_df()
+
+    df = df[
+        [
+            "en_comprehensiveness",
+            "en_relevance",
+            "en_accuracy",
+            "jp_comprehensiveness",
+            "jp_relevance",
+            "jp_accuracy",
+        ]
+    ].reset_index()
+
+    df = df.melt(id_vars=["index"], var_name="metric", value_name="score")
+    df["language"] = np.where(df["metric"].str.contains("en_"), "English", "Japanese")
+
+    df["metric"] = df["metric"].str.replace("en_", "").str.replace("jp_", "")
+
+    sns.set_style("whitegrid")
+
+    sns.stripplot(
+        data=df,
+        x="metric",
+        y="score",
+        hue="language",
+        palette="Pastel1",
+        alpha=0.24,
+        jitter=True,
+        dodge=True,
+        linewidth=0,
+        marker="D",
+        s=10,
+    )
+
+    plt.xlabel("Metric")
+    plt.ylabel("Score")
+    plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
+
+    plt.tight_layout()
+
+    plt.savefig("reports/figures/stripplot.png", dpi=1000)
 
 
 def show_avg_by_metric():
@@ -72,11 +111,11 @@ def show_avg_by_metric():
         x="metric",
         y="value",
         hue="language",
-        ci="sd",
-        palette="Paired",
+        errorbar="sd",
+        palette="Pastel1",
         alpha=0.8,
         height=4,
-        aspect=1.5,
+        aspect=0.8,
     )
 
     ax.set_axis_labels("", "Score")
@@ -102,12 +141,12 @@ def show_ecdf():
     )
 
     sns.set_style("whitegrid")
-    sns.set_palette("Paired")
+    sns.set_palette("Pastel1")
 
     en_series, en_ecdf = ecdf(df["en_average"])
     jp_series, jp_ecdf = ecdf(df["jp_average"])
 
-    fig = plt.figure(figsize=(8, 6))
+    fig = plt.figure(figsize=(12, 4))
     plt.step(en_series, en_ecdf, label="English", where="post")
     plt.step(jp_series, jp_ecdf, label="Japanese", where="post")
 
@@ -130,6 +169,7 @@ def show_en_jp_average_scores():
     df["jp_average"] = df[["jp_comprehensiveness", "jp_relevance", "jp_accuracy"]].mean(
         axis=1
     )
+    fig = plt.figure(figsize=(6, 10))
     ax = df[["en_average", "jp_average"]].plot(kind="bar", rot=0, ax=ax)
     ax.set_xlabel("Tweet Index")
     ax.set_ylabel("Average Score")
@@ -139,4 +179,4 @@ def show_en_jp_average_scores():
     plt.show()
 
 
-show_ecdf()
+show_avg_by_metric()
